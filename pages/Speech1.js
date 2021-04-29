@@ -1,4 +1,5 @@
-import useSpeechToText from "react-hook-speech-to-text";
+//import useSpeechToText from "react-hook-speech-to-text";
+import useSpeechToText from "../src/react-hook-speech-to-text/Hooks/index.tsx";
 
 function Speech1() {
   const {
