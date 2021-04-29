@@ -1410,6 +1410,11 @@ react-dom@17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
+react-hook-speech-to-text@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-hook-speech-to-text/-/react-hook-speech-to-text-0.5.0.tgz#bffa131c4484035c9a019211e03c3adfea71a232"
+  integrity sha512-b/pRg3kQsbBZcsJYzoucOP+bb0KOXIZBgLHdz16ocDijbsOYVKDxyHZ701LwyhJ7KJ0jDKuq5NvRoqPDg293ZQ==
+
 react-is@16.13.1, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -1419,6 +1424,11 @@ react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
+
+react-speech-recognition@^3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/react-speech-recognition/-/react-speech-recognition-3.8.0.tgz#0b40b6880e46b3aa6244051e8e989c4640eaaa58"
+  integrity sha512-mQ5oVQPt2l95/YKuaB+vGdDCuOKJS/ezwALWgo0w1+/CT3N2jxAdkOzeqvJiBmCLf263sCbkJ/L4fI8R1ij2IA==
 
 react@17.0.2:
   version "17.0.2"
