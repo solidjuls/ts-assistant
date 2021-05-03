@@ -1,13 +1,29 @@
 // import useSpeechToText from 'react-hook-speech-to-text';
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
+import { cardGenerator } from "../src/utils/cardGenerator";
+import { Card } from "../src/components/Card/Card.tsx";
 
-const Speech1 = dynamic(() => import("./Speech1"), { ssr: false });
-//const Speech2 = dynamic(() => import("./Speech2"), { ssr: false });
+const Speech1 = dynamic(() => import("../src/components/Speech1"), {
+  ssr: false,
+});
+// const Speech2 = dynamic(() => import("../src/components/Speech2"), { ssr: false });
+
+const gameInit = () => ({
+  cards: cardGenerator(),
+});
 
 export default function Home() {
+  const [game, setGame] = useState(gameInit());
+  const [card, setCard] = useState("");
+
+  const updateAction = (cardName) => {
+    console.log("updateAction", cardName)
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -17,11 +33,39 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
+        <Speech1 />
+        <input type="text" value={card} onChange={(e) => setCard(e.value)} />
+
+        <b>Draft</b>
+        <ul>
+          {game.cards
+            .filter((card) => card.status === "draft")
+            .map((card) => (
+              <li>
+                <Card name={card.name} action={updateAction} />
+              </li>
+            ))}
+        </ul>
+        <b>Removed</b>
+        <ul>
+          {game.cards
+            .filter((card) => card.status === "removed")
+            .map((card) => (
+              <li>{card.name}</li>
+            ))}
+        </ul>
+        <b>Discard</b>
+        <ul>
+          {game.cards
+            .filter((card) => card.status === "discard")
+            .map((card) => (
+              <li>{card.name}</li>
+            ))}
+        </ul>
+        {/* <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-        <Speech1 />
-        {/* <Speech2 /> */}
+        <Speech2 />
         <p className={styles.description}>
           Get started by editing{" "}
           <code className={styles.code}>pages/index.js</code>
@@ -55,7 +99,7 @@ export default function Home() {
               Instantly deploy your Next.js site to a public URL with Vercel.
             </p>
           </a>
-        </div>
+        </div>*/}
       </main>
 
       <footer className={styles.footer}>
