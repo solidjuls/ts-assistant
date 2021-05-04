@@ -126,7 +126,7 @@ export default function useSpeechToText({
       recognition.onresult = (e) => {
         if (e.results) {
           setResults((prevResults) => [
-            ...prevResults,
+            //...prevResults,
             e.results[e.results.length - 1][0].transcript
           ]);
         }
@@ -290,5 +290,5 @@ export default function useSpeechToText({
     };
   };
 
-  return { results, startSpeechToText, stopSpeechToText, isRecording, error };
+  return { results, setResults, startSpeechToText, stopSpeechToText, isRecording, error };
 }

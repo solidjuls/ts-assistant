@@ -3,11 +3,12 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
-import styles from "../styles/Home.module.css";
-import { cardGenerator } from "../src/utils/cardGenerator";
-import { Card } from "../src/components/Card/Card.tsx";
+import styles from "/styles/Home.module.css";
+import { cardGenerator } from "/src/utils/cardGenerator";
+import { Card } from "/src/components/Card/Card";
+import { CardStatus } from "/src/types";
 
-const Speech1 = dynamic(() => import("../src/components/Speech1"), {
+const SpeechToText = dynamic(() => import("/src/components/SpeechToText/SpeechToText"), {
   ssr: false,
 });
 // const Speech2 = dynamic(() => import("../src/components/Speech2"), { ssr: false });
@@ -20,10 +21,20 @@ export default function Home() {
   const [game, setGame] = useState(gameInit());
   const [card, setCard] = useState("");
 
-  const updateAction = (cardName) => {
-    console.log("updateAction", cardName)
-  }
-
+  const updateAction = (card, status) => {
+    setGame({
+      cards: game.cards.map((item) => {
+        if (item.name === card.name) {
+          return {
+            ...item,
+            status,
+          };
+        }
+        return item;
+      }),
+    });
+  };
+  console.log("game", game)
   return (
     <div className={styles.container}>
       <Head>
@@ -33,23 +44,27 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <Speech1 />
+        <SpeechToText updateAction={updateAction} cards={game.cards.filter((card) => card.status === CardStatus.draft)} />
         <input type="text" value={card} onChange={(e) => setCard(e.value)} />
 
         <b>Draft</b>
         <ul>
           {game.cards
-            .filter((card) => card.status === "draft")
+            .filter((card) => card.status === CardStatus.draft)
             .map((card) => (
               <li>
-                <Card name={card.name} action={updateAction} />
+                <Card
+                  name={card.name}
+                  removable={card.removable}
+                  setStatus={updateAction}
+                />
               </li>
             ))}
         </ul>
         <b>Removed</b>
         <ul>
           {game.cards
-            .filter((card) => card.status === "removed")
+            .filter((card) => card.status === CardStatus.removed)
             .map((card) => (
               <li>{card.name}</li>
             ))}
@@ -57,7 +72,7 @@ export default function Home() {
         <b>Discard</b>
         <ul>
           {game.cards
-            .filter((card) => card.status === "discard")
+            .filter((card) => card.status === CardStatus.discard)
             .map((card) => (
               <li>{card.name}</li>
             ))}

@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@stitches/react": "^0.1.9",
     "hark": "^1.2.3",
     "inline-worker": "^1.1.0",
     "next": "10.2.0",
@@ -15,5 +16,9 @@
     "react-dom": "17.0.2",
     "react-hook-speech-to-text": "0.5.0",
     "react-speech-recognition": "^3.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.4",
+    "typescript": "^4.2.4"
   }
 }
