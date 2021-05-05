@@ -5,6 +5,12 @@ export enum CardStatus {
   discard = "DISCARD",
 }
 
+export enum GameStage {
+  earlyWar = "EARLYWAR",
+  midWar = "MIDWAR",
+  lateWar = "LATEWAR",
+}
+
 export interface CardTypes {
   name: string;
   action: () => any;

@@ -5,26 +5,78 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "/styles/Home.module.css";
 import { cardGenerator } from "/src/utils/cardGenerator";
+import { Accordeon } from "/src/components/Accordeon/Accordeon";
 import { Card } from "/src/components/Card/Card";
-import { CardStatus } from "/src/types";
+import { CardStatus, GameStage } from "/src/types";
 
-const SpeechToText = dynamic(() => import("/src/components/SpeechToText/SpeechToText"), {
-  ssr: false,
-});
+const SpeechToText = dynamic(
+  () => import("/src/components/SpeechToText/SpeechToText"),
+  {
+    ssr: false,
+  }
+);
 // const Speech2 = dynamic(() => import("../src/components/Speech2"), { ssr: false });
 
 const gameInit = () => ({
-  cards: cardGenerator(),
+  cards: cardGenerator().filter(
+    (card) =>
+      card.status === CardStatus.draft && card.stage === GameStage.earlyWar
+  ),
 });
 
 export default function Home() {
   const [game, setGame] = useState(gameInit());
   const [card, setCard] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
-  const updateAction = (card, status) => {
+  const addLatewarCards = () => {
+    const lateCards = cardGenerator().filter(
+      (card) => card.stage === GameStage.lateWar
+    );
+
+    setGame({
+      cards: [
+        ...lateCards.filter(
+          (lateWarCard) =>
+            !game.cards.find((card) => card.name === lateWarCard.name)
+        ),
+        ...game.cards,
+      ],
+    });
+  };
+  const addMidwarCards = () => {
+    const midWarCards = cardGenerator().filter(
+      (card) => card.stage === GameStage.midWar
+    );
+
+    setGame({
+      cards: [
+        ...midWarCards.filter(
+          (midWarCard) =>
+            !game.cards.find((card) => card.name === midWarCard.name)
+        ),
+        ...game.cards,
+      ],
+    });
+  };
+  const redraw = () => {
     setGame({
       cards: game.cards.map((item) => {
-        if (item.name === card.name) {
+        if (item.status === CardStatus.discard) {
+          return {
+            ...item,
+            status: CardStatus.draft,
+          };
+        }
+        return item;
+      }),
+    });
+  };
+
+  const updateAction = (cardName, status) => {
+    setGame({
+      cards: game.cards.map((item) => {
+        if (item.name === cardName) {
           return {
             ...item,
             status,
@@ -34,7 +86,7 @@ export default function Home() {
       }),
     });
   };
-  console.log("game", game)
+  console.log("game", game.cards.filter(card => card.status === CardStatus.draft));
   return (
     <div className={styles.container}>
       <Head>
@@ -44,39 +96,54 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <SpeechToText updateAction={updateAction} cards={game.cards.filter((card) => card.status === CardStatus.draft)} />
+        <button onClick={redraw}>Redraw</button>
+        <button onClick={addMidwarCards}>Add Mid War cards</button>
+        <button onClick={addLatewarCards}>Add Late War cards</button>
+        <SpeechToText
+          updateAction={updateAction}
+          cards={game.cards.filter((card) => card.status === CardStatus.draft)}
+        />
         <input type="text" value={card} onChange={(e) => setCard(e.value)} />
+        <Accordeon header="Draft" initialOpen>
+          <ul>
+            {game.cards
+              .filter((card) => card.status === CardStatus.draft)
+              .map((card) => (
+                <li>
+                  <Card
+                    name={card.name}
+                    removable={card.removable}
+                    setStatus={updateAction}
+                    onClick={() => setShowPopup(true)}
+                  />
+                </li>
+              ))}
+          </ul>
+        </Accordeon>
 
-        <b>Draft</b>
-        <ul>
-          {game.cards
-            .filter((card) => card.status === CardStatus.draft)
-            .map((card) => (
-              <li>
+        <Accordeon header="Removed" initialOpen>
+          <ul>
+            {game.cards
+              .filter((card) => card.status === CardStatus.removed)
+              .map((card) => (
+                <li>{card.name}</li>
+              ))}
+          </ul>
+        </Accordeon>
+        <Accordeon header="Discard" initialOpen>
+          <ul>
+            {game.cards
+              .filter((card) => card.status === CardStatus.discard)
+              .map((card) => (
                 <Card
                   name={card.name}
                   removable={card.removable}
                   setStatus={updateAction}
+                  onClick={() => setShowPopup(true)}
                 />
-              </li>
-            ))}
-        </ul>
-        <b>Removed</b>
-        <ul>
-          {game.cards
-            .filter((card) => card.status === CardStatus.removed)
-            .map((card) => (
-              <li>{card.name}</li>
-            ))}
-        </ul>
-        <b>Discard</b>
-        <ul>
-          {game.cards
-            .filter((card) => card.status === CardStatus.discard)
-            .map((card) => (
-              <li>{card.name}</li>
-            ))}
-        </ul>
+              ))}
+          </ul>
+        </Accordeon>
         {/* <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>

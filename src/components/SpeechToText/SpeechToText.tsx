@@ -25,7 +25,7 @@ function SpeechToText({ updateAction, cards }) {
       console.log("card", card);
       if (card) {
         if (!card.removable) {
-          updateAction(card, CardStatus.discard);
+          updateAction(card.name, CardStatus.discard);
         } else {
           setMatchedResult(card);
         }
@@ -37,7 +37,7 @@ function SpeechToText({ updateAction, cards }) {
       ["removed", "discard"].some((item) => item.includes(results[0]?.trim()))
     ) {
       console.log("found it and action dispatched!", matchedResult, CardStatus[results[0].trim()]);
-      updateAction(matchedResult[0], CardStatus[results[0].trim()]);
+      updateAction(matchedResult[0].name, CardStatus[results[0].trim()]);
       setMatchedResult([])
     }
   }, [results]);
